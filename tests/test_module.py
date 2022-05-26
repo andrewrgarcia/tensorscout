@@ -2,49 +2,79 @@ from lib import module as scout
 import numpy as np
 
 
+def tensorloopA(tensor=np.ones((2,2))):
+    
+    for i in range(2000):
+        tensor += np.random.randint(0,9,(tensor.shape))
+
+    return tensor 
+
+def tensorloopB(tensor=np.ones((2,2))):
+
+    for i in range(2000):
+        tensor += np.random.randint(0,9,(tensor.shape))
+
+    return tensor, np.sum(tensor), 'hello'
+
+
+def tensorloopC(tensor=np.ones((2,2))):
+    return 1,2,3,4
+
+def tensorloopD(tensor=np.ones((2,2))):
+    return 'hello'
+
+def tensorloopE(tensor=np.ones((2,2))):
+    return 1
+
+
     
 def test_oneproc():
-    
-    def test_tensorloop(tensor):
-    
-        for i in range(2000):
-            tensor += np.random.randint(0,9,(tensor.shape))
-        
 
-        # return 1,2,3,4
-        # return 'hello'
-        # return 1
-        # return tensor, np.sum(tensor), 'hello'
-        return tensor 
-
-
-    A = np.random.randint(0,2,(1000,1000))
+    A = np.random.randint(0,2,(100,100))
     # A = A.reshape((2,500,1000))
-    res = test_tensorloop(A)
+    res = tensorloopA(A)
 
     return res
 
 
-def test_multiproc():
-    
-    def test_tensorloop(tensor):
-    
-        for i in range(2000):
-            tensor += np.random.randint(0,9,(tensor.shape))
-        
+def test_multiprocA():
 
-        # return 1,2,3,4
-        # return 'hello'
-        # return 1
-        # return tensor, np.sum(tensor), 'hello'
-        return tensor 
-
-    A = np.random.randint(0,2,(1000,1000))
-    # A = A.reshape((2,500,1000))
-    res = scout.multi_core(A, test_tensorloop, cores = 2)
+    A = np.random.randint(0,2,(100,100))
+    res = scout.multi_core(A, tensorloopA, cores = 2)
     
     return res
 
-# test_slice()
+def test_multiprocB():
+
+    A = np.random.randint(0,2,(100,100))
+    res = scout.multi_core(A, tensorloopB, cores = 2)
+    
+    return res
+
+def test_multiprocC():
+
+    A = np.random.randint(0,2,(100,100))
+    res = scout.multi_core(A, tensorloopC, cores = 2)
+    
+    return res
+
+def test_multiprocD():
+
+    A = np.random.randint(0,2,(100,100))
+    res = scout.multi_core(A, tensorloopD, cores = 2)
+    
+    return res
+
+def test_multiprocE():
+
+    A = np.random.randint(0,2,(100,100))
+    res = scout.multi_core(A, tensorloopE, cores = 2)
+    
+    return res
+
 test_oneproc()
-test_multiproc()
+test_multiprocA()
+test_multiprocB()
+test_multiprocC()
+test_multiprocD()
+test_multiprocE()
