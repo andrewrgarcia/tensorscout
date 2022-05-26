@@ -1,2 +1,2 @@
 # TensorScout
-A Python library for multiprocessing-powered tensor operations.
+Parallel processing for tensors. A Python library.

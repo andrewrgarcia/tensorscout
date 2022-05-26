@@ -2,14 +2,6 @@ import numpy as np
 import pathos.multiprocessing as pathosmp
     
 
-# def slicendice(tensor,L=3):
-#     '''slice-n-dice
-#     partition higher-order (>= 3D) tensors into hypercubes
-#     currently beta)
-#     '''
-#     return tensor.reshape((*6*[L]))
-
-
 def single_core(tensor, func, core_idx=1):
     '''handles computation in a single core'''
     # print('computing on core #{}'.format(core_idx))
@@ -38,3 +30,13 @@ def multi_core(tensor, func, cores = 2):
 
     return results
 
+
+def rebuild(tensor):
+    '''re-assemble tensor from parts (multi_core)'''
+    tensor = np.array([*tensor])
+    *zy,x = tensor.shape
+    
+    return tensor.reshape((np.multiply(*zy),x))
+
+    
+    

@@ -72,9 +72,20 @@ def test_multiprocE():
     
     return res
 
+def test_rebuild():
+
+    tensor = test_multiprocA()
+    res1 = scout.rebuild(tensor)
+    
+    tensor = test_multiprocB()[0]
+    res2 = scout.rebuild(tensor)
+    
+    return res1, res2
+
 test_oneproc()
 test_multiprocA()
 test_multiprocB()
 test_multiprocC()
 test_multiprocD()
 test_multiprocE()
+test_rebuild()
