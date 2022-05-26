@@ -48,6 +48,10 @@ A = np.ones((240,240))
 A = perforate(A)
 plt.imshow(A)
 
+#%timeit perforate(np.ones((240,240)))
+#5.23 s ± 9.99 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+
 '''parallel processing (4 CPUs)'''
 A_MP = np.ones((240,240))
 A_MP =  scout.rebuild(scout.multi_core(A_MP, perforateMP, cores = 4))
@@ -55,8 +59,4 @@ plt.imshow(A_MP)
 
 #%timeit scout.rebuild(scout.multi_core(np.ones((240,240)), perforateMP, cores = 4))
 #745 ms ± 8.86 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-
-#%timeit perforate(np.ones((240,240)))
-#5.23 s ± 9.99 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-
 ```
