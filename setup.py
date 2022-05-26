@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(name='tensorscout',
       version='1.0',
-      description='A python library for straightforward tensor operations',
+      description='A Python library for multiprocessing-powered tensor operations.',
       url='https://github.com/andrewrgarcia/tensorscout',
       author='Andrew Garcia, PhD',
       license='MIT',
