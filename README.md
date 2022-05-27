@@ -22,7 +22,7 @@ pip install tensorscout
 ## Usage Example
 
 ```ruby
-import tensorscout as scout
+import tensorscout.lib.module as scout
 import matplotlib.pyplot as plt
 
 '''Performance comparison of a perforation algorithm using a single core (CPU) v. four cores in parallel'''  
