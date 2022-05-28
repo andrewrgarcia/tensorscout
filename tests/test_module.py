@@ -1,4 +1,4 @@
-from lib import module as scout
+import lib as scout
 import numpy as np
 
 
