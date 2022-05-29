@@ -1,4 +1,4 @@
-import lib as scout
+import tensorscout as scout
 import numpy as np
 
 

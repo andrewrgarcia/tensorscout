@@ -1,5 +1,5 @@
 # TensorScout
-A Python library for tensor parallel processing.
+A Python library for tensor operations powered by parallel processing.
 
 ## Installation
 
@@ -22,7 +22,7 @@ pip install tensorscout
 ## Usage Example
 
 ```ruby
-import tensorscout.lib as scout
+import tensorscout as scout
 import matplotlib.pyplot as plt
 
 '''Performance comparison of a perforation algorithm using a single core (CPU) v. four cores in parallel'''  
