@@ -1,6 +1,9 @@
 # TensorScout
 A Python library for tensor operations powered by parallel processing.
 
+<img src="https://raw.githubusercontent.com/andrewrgarcia/tensorscout/main/tensorscout.svg" width="400">
+
+
 ## Installation
 
 ```ruby
