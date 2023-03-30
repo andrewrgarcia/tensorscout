@@ -1,6 +1,7 @@
 __pycache__
+_old
 *.egg-info/
 venv/
 dist/
 notes.txt
-tests/rawtest.py
+rawtest.py
