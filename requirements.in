@@ -1,3 +1,5 @@
+tensorscout
+
 numpy
 scipy
 pathos
@@ -5,4 +7,3 @@ matplotlib
 timethis
 sphinx 
 sphinx-rtd-theme
-

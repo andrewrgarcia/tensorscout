@@ -10,10 +10,7 @@ What if for some reason, you could unlock 100% of your computing processing powe
   :target: https://github.com/andrewrgarcia/tensorscout
 
 
-
-
 |icon|
-
 
 The Python package is designed for tensor operations and is optimized for parallel processing. 
 
