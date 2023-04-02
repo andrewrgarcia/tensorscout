@@ -1,0 +1,14 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter C
+  \item \spxentry{cakerun}\spxextra{class in tensorscout}, \hyperpage{8}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{multicarlo}\spxextra{class in tensorscout}, \hyperpage{8}
+
+\end{sphinxtheindex}

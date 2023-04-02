@@ -1,1 +1,1 @@
-from tensorscout.module import *
+from tensorscout.main import *
