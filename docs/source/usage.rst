@@ -116,7 +116,7 @@ data resampling (bare): 6.478 seconds
 
 We compared multiprocessing and naive methods for generating random numbers and tracked the number of unique results.
 This showed that multiprocessing generated unique random numbers across different cores. 
-Both methods produced similar random sampling distributions, but the multiprocessing approach using ``@multicarlo`` with 4 cores showed around a 40% improvement in runtime performance.
+Both methods produced similar random sampling distributions, but the multiprocessing approach using ``@multicarlo`` with 4 cores showed around a runtime improvement of 170% over the bare approach.
 
 
 Campfire: Generating a Multiprocessing-Powered Dictionary 
