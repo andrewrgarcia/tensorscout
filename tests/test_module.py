@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from timethis import timethis
 
-def tecst_multicarlo():
+def test_multicarlo():
     @scout.multicarlo(num_iters=1000, num_cores=4)
     def monte_carlo_function(data, *args, **kwargs):
         simulated_data = np.random.normal(np.mean(data), np.std(data))
@@ -19,47 +19,54 @@ def tecst_multicarlo():
 
 def test_campfire():
 
+    def unique(key='x'): return len(np.unique(map[key]))
+
     with timethis("campfire dictionary"):
 
         @scout.campfire(num_iters=400, num_cores=4)
-        def simulate_data(data, num_iters):
+        def simulation(data):
             for i in range(1000):
                 'the above 1,000 iters is to stress-test  the campfire method against the bare (no multiproc) method (in the end, only the last samples from x y and z are returned)'
-                x = [np.random.normal(0, 1) for i in range(num_iters)]
-                y = [np.random.normal(0, 1) for i in range(num_iters)]
-                z = [np.random.normal(0, 1) for i in range(num_iters)]
+                x = [np.random.normal(0, 1) for i in range(5)]
+                y = [np.random.normal(0, 1) for i in range(5)]
+                z = [np.random.normal(0, 1) for i in range(5)]
+        
+            # print(data)
             return {'x': x, 'y': y, 'z': z}
 
-        data = {'data': None}
-        
-        results = simulate_data(data, num_iters=1)
-        results = results["data"]
+        data = 'c'
+        map = simulation(data)
+        # print(map)
+        # print(map.keys())
+        print('unique samples -- x: {}, y: {}, z: {}'.format(unique('x'),unique('y'),unique('z')) )  
 
-        map = {key: [] for key in ['x','y','z']}
-        for i in results:
-            for key in i.keys():
-                map[key].append(i[key][0])
 
-        print(map.keys())
-        print(len(map['x']))
 
+    print('...................................................')
 
     with timethis("bare dictionary"):
 
-        def simulate_data_bare(data, num_iters):
-            for i in range(1000):
-                x = [np.random.normal(0, 1) for i in range(num_iters)]
-                y = [np.random.normal(0, 1) for i in range(num_iters)]
-                z = [np.random.normal(0, 1) for i in range(num_iters)]
-            return {'x': x, 'y': y, 'z': z}
+        def simulation_bare(data, num_iters):
+            X,Y,Z = [],[],[]
+            for j in range(num_iters):
+                for i in range(1000):
+                    x = [np.random.normal(0, 1) for i in range(5)]
+                    y = [np.random.normal(0, 1) for i in range(5)]
+                    z = [np.random.normal(0, 1) for i in range(5)]
+                X.extend(x), Y.extend(y), Z.extend(z)
 
-        data = 'hot-dog'
-        results = simulate_data_bare(data, num_iters=400)
-        print(results.keys())  
-        print(len(results['x']))  
+            # print(data)
+            return {'x': X, 'y': Y, 'z': Z}
+
+        data = 100
+        map_bare = simulation_bare(data, num_iters=400)
+        # print(map_bare)
+        # print(map_bare.keys())  
+        print('unique samples -- x: {}, y: {}, z: {}'.format(unique('x'),unique('y'),unique('z')) )  
 
 
-def tecst_cakerun():
+
+def test_cakerun():
     matrix = np.ones((252,252))
 
     plt.imshow(matrix,cmap='bone')

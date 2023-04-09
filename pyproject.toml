@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tensorscout"
-version = "2.1.0"
+version = "2.2.0"
 description = "A Python library for tensor operations powered by parallel processing"
 authors = ["andrewrgarcia <garcia.gtr@gmail.com>"]
 license = "MIT"

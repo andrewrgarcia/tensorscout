@@ -118,65 +118,72 @@ Campfire: Generating a Multiprocessing-Powered Dictionary
   Much like a campfire which brings people together and allow for sharing stories and experiences, 
   this decorator brings together the results of simulations across ``num_cores`` multiple processors and regroups them in a dictionary by key.
 
-If the algorithm is refined further, we may consider ``campfire`` a more powerful method decorator than the former because dictionaries can return several outputs and may be accessed by their keys. The below example is from the Python tests section
+If the algorithm is refined further, we may consider ``campfire`` a more powerful method decorator than the former because dictionaries can return several outputs and may be accessed by their keys. 
+The below example is from the Python tests section
 and shows how to return values from a "simulation" stored in ``x`` ``y`` ``z`` keys. 
 
 .. code-block:: python
 
-    with timethis("campfire dictionary"):
+   def unique(key='x'): return len(np.unique(map[key]))
 
-        @scout.campfire(num_iters=400, num_cores=4)
-        def simulate_data(data, num_iters):
-            for i in range(1000):
-               'stress test == 1000 iters'
-                x = [np.random.normal(0, 1) for i in range(num_iters)]
-                y = [np.random.normal(0, 1) for i in range(num_iters)]
-                z = [np.random.normal(0, 1) for i in range(num_iters)]
-            return {'x': x, 'y': y, 'z': z}
+   with timethis("campfire dictionary"):
 
-        data = {'data': None}
-        
-        results = simulate_data(data, num_iters=1)
-        results = results["data"]
+      @scout.campfire(num_iters=400, num_cores=4)
+      def simulation(data):
+         for i in range(1000):
+               'the above 1,000 iters is to stress-test  the campfire method against the bare (no multiproc) method (in the end, only the last samples from x y and z are returned)'
+               x = [np.random.normal(0, 1) for i in range(5)]
+               y = [np.random.normal(0, 1) for i in range(5)]
+               z = [np.random.normal(0, 1) for i in range(5)]
+      
+         return {'x': x, 'y': y, 'z': z}
 
-        map = {key: [] for key in ['x','y','z']}
-        for i in results:
-            for key in i.keys():
-                map[key].append(i[key][0])
+      data = 'c'
+      map = simulation(data)
+      print('unique samples -- x: {}, y: {}, z: {}'.format(unique('x'),unique('y'),unique('z')) )  
 
-        print(map.keys())
-        print(len(map['x']))
-        
-    print('-------------------------------------')
+   print('...................................................')
 
-    with timethis("bare dictionary"):
+   with timethis("bare dictionary"):
 
-        def simulate_data_bare(data, num_iters):
-            for i in range(1000):
-                x = [np.random.normal(0, 1) for i in range(num_iters)]
-                y = [np.random.normal(0, 1) for i in range(num_iters)]
-                z = [np.random.normal(0, 1) for i in range(num_iters)]
-            return {'x': x, 'y': y, 'z': z}
+      def simulation_bare(data, num_iters):
+         X,Y,Z = [],[],[]
+         for j in range(num_iters):
+               for i in range(1000):
+                  x = [np.random.normal(0, 1) for i in range(5)]
+                  y = [np.random.normal(0, 1) for i in range(5)]
+                  z = [np.random.normal(0, 1) for i in range(5)]
+               X.extend(x), Y.extend(y), Z.extend(z)
 
-        data = 'hot-dog'
-        results = simulate_data_bare(data, num_iters=400)
+         return {'x': X, 'y': Y, 'z': Z}
 
-        print(results.keys())  
-        print(len(results['x']))  
+      data = 100
+      map_bare = simulation_bare(data, num_iters=400)
+      print('unique samples -- x: {}, y: {}, z: {}'.format(unique('x'),unique('y'),unique('z')) )  
 
 
 >>> [OUT]
-dict_keys(['x', 'y', 'z'])
-400
-campfire dictionary: 0.851 seconds
--------------------------------------
-dict_keys(['x', 'y', 'z'])
-400
-bare dictionary: 1.269 seconds
+unique samples -- x: 2000, y: 2000, z: 2000
+campfire dictionary: 3.013 seconds
+...................................................
+unique samples -- x: 2000, y: 2000, z: 2000
+bare dictionary: 5.421 seconds
+
+Notice how much additional scripting is needed to re-organize the data with simulations on a ``bare (no campfire)`` dictionary. 
+Below we compare the 2000 ``x,y,z`` entries graphically between the ``campfire`` sampling and the naive ``bare`` sampling from above. 
 
 
-The ``campfire`` is still under development. 
+.. |xyzcamp| image:: ../img/xyz_campfire.png
+  :width: 280
+  :alt: Alternative text
 
+.. |xyzbare| image:: ../img/xyz_bare.png
+   :width: 280
+   :alt: Alternative text
+
+|xyzcamp| |xyzbare|
+
+Simulations with ``campfire`` (left) and with a naive ``bare`` approach (right). The above were drawn with the `voxelmap draw method for coordinates <https://voxelmap.readthedocs.io/en/latest/usage.html#draw-voxels-from-coordinate-arrays>`_ from the `voxelmap <voxelmap.readthedocs.io>`_ package
 
 
 Parallel Computation on Sectorized Matrices using Multiprocessing

@@ -6,8 +6,8 @@ project = 'tensorscout'
 copyright = '2023, Andrew Garcia'
 author = 'Andrew Garcia, Ph.D.'
 
-release = '2.1'
-version = '2.1.0'
+release = '2.2'
+version = '2.2.0'
 
 # -- General configuration
 
