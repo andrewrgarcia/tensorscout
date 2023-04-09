@@ -190,7 +190,7 @@ Parallel Computation on Sectorized Matrices using Multiprocessing
 -------------------------------------------------------------------------
 
 .. figure:: ../img/dallecake_cakerun.png
-  :width: 400
+  :width: 300
   :alt: Alternative text
   :target: https://github.com/andrewrgarcia/voxelmap
 
