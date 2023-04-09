@@ -9,3 +9,5 @@ try.py
 
 draft_paper/
 docs/build
+aiart/
+terraform*

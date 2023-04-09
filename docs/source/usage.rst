@@ -17,9 +17,11 @@ It is recommended you use voxelmap through a virtual environment. You may follow
 To exit the virtual environment, simply type ``deactivate``. To access it at any other time again, enter with the above ``source`` command.
 
 
-Monte Carlo sampling with multiple processors
-------------------------------------------------
+Simulations and/or sampling with multiple processors
+----------------------------------------------------------------
 
+Simple Return Value 
+...........................
 
 When performing Monte Carlo sampling at a high number, it can significantly impact computing power. 
 To address this, we have developed the ``@multicarlo`` decorator, which allocates a specific number of iterations to
@@ -104,21 +106,88 @@ monte carlo resampling (bare): 4.328 seconds
 Both approaches produce a similar random sampling distribution outcome, 
 but the ``@multicarlo`` decorated function that uses multiprocessing on 4 cores shows around 50% better runtime performance.
 
+
+Campfire: Generating a Multiprocessing-Powered Dictionary 
+...............................................................
+
+.. figure:: ../img/campfire.png
+  :width: 300
+  :alt: Alternative text
+  :target: https://github.com/andrewrgarcia/voxelmap
+
+  Much like a campfire which brings people together and allow for sharing stories and experiences, 
+  this decorator brings together the results of simulations across ``num_cores`` multiple processors and regroups them in a dictionary by key.
+
+If the algorithm is refined further, we may consider ``campfire`` a more powerful method decorator than the former because dictionaries can return several outputs and may be accessed by their keys. The below example is from the Python tests section
+and shows how to return values from a "simulation" stored in ``x`` ``y`` ``z`` keys. 
+
+.. code-block:: python
+
+    with timethis("campfire dictionary"):
+
+        @scout.campfire(num_iters=400, num_cores=4)
+        def simulate_data(data, num_iters):
+            for i in range(1000):
+               'stress test == 1000 iters'
+                x = [np.random.normal(0, 1) for i in range(num_iters)]
+                y = [np.random.normal(0, 1) for i in range(num_iters)]
+                z = [np.random.normal(0, 1) for i in range(num_iters)]
+            return {'x': x, 'y': y, 'z': z}
+
+        data = {'data': None}
+        
+        results = simulate_data(data, num_iters=1)
+        results = results["data"]
+
+        map = {key: [] for key in ['x','y','z']}
+        for i in results:
+            for key in i.keys():
+                map[key].append(i[key][0])
+
+        print(map.keys())
+        print(len(map['x']))
+        
+    print('-------------------------------------')
+
+    with timethis("bare dictionary"):
+
+        def simulate_data_bare(data, num_iters):
+            for i in range(1000):
+                x = [np.random.normal(0, 1) for i in range(num_iters)]
+                y = [np.random.normal(0, 1) for i in range(num_iters)]
+                z = [np.random.normal(0, 1) for i in range(num_iters)]
+            return {'x': x, 'y': y, 'z': z}
+
+        data = 'hot-dog'
+        results = simulate_data_bare(data, num_iters=400)
+
+        print(results.keys())  
+        print(len(results['x']))  
+
+
+>>> [OUT]
+dict_keys(['x', 'y', 'z'])
+400
+campfire dictionary: 0.851 seconds
+-------------------------------------
+dict_keys(['x', 'y', 'z'])
+400
+bare dictionary: 1.269 seconds
+
+
+The ``campfire`` is still under development. 
+
+
+
 Parallel Computation on Sectorized Matrices using Multiprocessing
 -------------------------------------------------------------------------
 
-.. |cakerun scheme| image:: ../img/cakerun_concept.png
-  :width: 300
-  :alt: Alternative text
-  :target: https://github.com/andrewrgarcia/voxelmap
-
-.. |cake| image:: ../img/DALLE_cake.png
-  :width: 300
+.. figure:: ../img/dallecake_cakerun.png
+  :width: 400
   :alt: Alternative text
   :target: https://github.com/andrewrgarcia/voxelmap
 
 
-|cakerun scheme| |cake|
 
 The question of whether it's faster to eat a cake alone or have 100 people cut a slice and eat their portions until 
 it's gone highlights the main concept behind the cakerun decorator. 
@@ -152,7 +221,7 @@ that will be operated on by both methodologies.
    plt.title('initial canvas')
 
 
-..  image:: ../img/black_canvas.png
+..  figure:: ../img/black_canvas.png
   :width: 320
   :alt: Alternative text
 

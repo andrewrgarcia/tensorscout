@@ -39,6 +39,43 @@ def multicarlo(num_iters, num_cores):
     return decorator_monte_carlo
 
 
+def campfire(num_iters, num_cores):
+    '''
+    Much like a campfire which brings people together and allow for sharing stories and experiences, 
+    this decorator brings together the results of simulations across ``num_cores`` multiple processors and regroups them in a dictionary by key.
+    
+    Parameters
+    ------------
+    num_cores: int
+        Number of processors to use 
+    num_iters : int
+        The number of iterations to perform for a specific model / Monte Carlo simulation. 
+    '''
+    def decorator_monte_carlo(monte_carlo_func):
+        @wraps(monte_carlo_func)
+        def wrapper_monte_carlo(data, *args, **kwargs):
+            def simulate_data(data, num_iters):
+                results = {}
+                for key in data.keys():
+                    results[key] = []
+                    for i in range(num_iters):
+                        simulated_data = monte_carlo_func(data[key], *args, **kwargs)
+                        results[key].append(simulated_data)
+                return results
+            
+            pool = pathosmp.ProcessingPool(num_cores)
+            iterations_per_process = num_iters // num_cores
+            partial_simulate_data = lambda i: simulate_data(data, iterations_per_process)
+            results = pool.map(partial_simulate_data, range(num_cores))
+            regrouped_results = {}
+            for key in results[0].keys():
+                regrouped_results[key] = [item for sublist in [res[key] for res in results] for item in sublist]
+            return regrouped_results
+        return wrapper_monte_carlo
+    return decorator_monte_carlo
+
+
+
 def cakerun(num_cores, L_sectors):
     '''
     This decorator partitions an array into sectors and applies a given function to each sector in parallel. The result of each computation is merged into a final output array.
