@@ -3,18 +3,45 @@ import numpy as np
 import matplotlib.pyplot as plt
 from timethis import timethis
 
+
+def make_histograms(data,results, title):
+   plt.figure()
+   plt.title(title+' N = 100,000')
+   plt.hist(data,bins = 7, alpha=0.5,label='data')
+   plt.hist(results,bins=600,alpha=0.5,color='magenta',label='data resampling')
+   plt.legend()
+
+
+
 def test_multicarlo():
-    @scout.multicarlo(num_iters=1000, num_cores=4)
-    def monte_carlo_function(data, *args, **kwargs):
-        simulated_data = np.random.normal(np.mean(data), np.std(data))
-        return simulated_data
-
+    print()
     data = np.random.normal(0, 1, 1000)
-    results = monte_carlo_function(data)
-    plt.hist(data,alpha=0.5)
-    plt.hist(results,alpha=0.5)
-    plt.show()
 
+    title = 'data resampling (with @multicarlo -- 4 cores)'
+    with timethis(title):
+        @scout.multicarlo(num_iters=100000, num_cores=4)
+        def monte_carlo_function(data, *args, **kwargs):
+            simulated_data = np.random.normal(np.mean(data), np.std(data))
+            return simulated_data
+
+        results = monte_carlo_function(data)
+        print('number unique results: {}/{}'.format(len(np.unique(results)),len(results)))
+
+        make_histograms(data,results,title)
+
+    print('...........................................................')
+    title='data resampling (bare)'
+    with timethis(title):
+
+        def monte_carlo_function_bare(data, *args, **kwargs):
+            simulated_data = np.random.normal(np.mean(data), np.std(data))
+            return simulated_data
+
+        results = [monte_carlo_function_bare(data) for i in range(100000)]
+        print('number unique results: {}/{}'.format(len(np.unique(results)),len(results)))
+        make_histograms(data,results,title)
+
+    plt.show()
 
 
 def test_campfire():

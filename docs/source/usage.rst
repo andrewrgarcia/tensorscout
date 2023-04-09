@@ -40,15 +40,18 @@ in both approaches to avoid redundancy.
    import matplotlib.pyplot as plt
    from timethis import timethis
 
-   def make_histograms(results, title):
+   def make_histograms(data,results, title):
       plt.figure()
-      plt.title(title+'(N = 100,000)')
-      plt.hist(data,alpha=0.5,label='data')
-      plt.hist(results,alpha=0.5,label=title)
+      plt.title(title+' N = 100,000')
+      plt.hist(data,bins = 7, alpha=0.5,label='data')
+      plt.hist(results,bins=600,alpha=0.5,color='magenta',label='data resampling')
       plt.legend()
 
-The operations we run on both methodologies are random sampling operations which take random numbers from a distribution.
-For both methods, we set the number of samples to 100,000, which is a considerable amount. 
+   print()
+   data = np.random.normal(0, 1, 1000)
+
+The operations we run on both methodologies are random sampling operations which take random numbers from the ``data`` distribution defined above, which is a distribution made from 1,000 samples from 
+a Gaussian distribution with a mean of ``0`` and standard deviation of ``1``. For both methods, we set the number of samples to 100,000, which is a considerable amount. 
 In the following code block, we apply the ``@multicarlo`` decorator to our random sampling function ``monte_carlo_function``
 and distribute the sampling iterations across four cores. 
 
@@ -56,18 +59,20 @@ The ``timethis()`` function is used to record the run times of both methods and 
 
 .. code-block:: python
 
-
    title = 'data resampling (with @multicarlo -- 4 cores)'
    with timethis(title):
-
       @scout.multicarlo(num_iters=100000, num_cores=4)
       def monte_carlo_function(data, *args, **kwargs):
          simulated_data = np.random.normal(np.mean(data), np.std(data))
          return simulated_data
 
-      data = np.random.normal(0, 1, 1000)
       results = monte_carlo_function(data)
-      make_histograms(results,title)
+      print('number unique results: {}/{}'.format(len(np.unique(results)),len(results)))
+
+      make_histograms(data,results,title)
+
+   print('...........................................................')
+
       
 The following code block executes the same tasks as the previous block, but using a bare approach, 
 meaning that it uses a single core to perform all 100,000 random samples.
@@ -81,10 +86,11 @@ meaning that it uses a single core to perform all 100,000 random samples.
          simulated_data = np.random.normal(np.mean(data), np.std(data))
          return simulated_data
 
-      data = np.random.normal(0, 1, 1000)
       results = [monte_carlo_function_bare(data) for i in range(100000)]
-      make_histograms(results,title)
-
+      print('number unique results: {}/{}'.format(len(np.unique(results)),len(results)))
+      make_histograms(data,results,title)
+   
+   #make plots for both approaches
    plt.show()
 
 The output for the previous three code blocks is displayed below.
@@ -100,11 +106,17 @@ The output for the previous three code blocks is displayed below.
 |multicarlo| |multicarlo bare|
 
 >>> [OUT]
-monte carlo resampling (with @multicarlo -- 4 cores): 2.812 seconds
-monte carlo resampling (bare): 4.328 seconds
+number unique results: 100000/100000
+data resampling (with @multicarlo -- 4 cores): 3.726 seconds
+...........................................................
+number unique results: 100000/100000
+data resampling (bare): 6.478 seconds
 
-Both approaches produce a similar random sampling distribution outcome, 
-but the ``@multicarlo`` decorated function that uses multiprocessing on 4 cores shows around 50% better runtime performance.
+
+
+We compared multiprocessing and naive methods for generating random numbers and tracked the number of unique results.
+This showed that multiprocessing generated unique random numbers across different cores. 
+Both methods produced similar random sampling distributions, but the multiprocessing approach using ``@multicarlo`` with 4 cores showed around a 40% improvement in runtime performance.
 
 
 Campfire: Generating a Multiprocessing-Powered Dictionary 

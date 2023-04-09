@@ -6,6 +6,7 @@ from functools import wraps
 
 import matplotlib.pyplot as plt
 import math
+import random
 
 
 def multicarlo(num_iters, num_cores):
@@ -22,64 +23,26 @@ def multicarlo(num_iters, num_cores):
     def decorator_monte_carlo(monte_carlo_func):
         @wraps(monte_carlo_func)
         def wrapper_monte_carlo(data, *args, **kwargs):
-            def simulate_data(data, num_iters):
+            def simulate_data(data, num_iters, seed):
+                np.random.seed(seed)
                 results = []
                 for i in range(num_iters):
                     simulated_data = monte_carlo_func(data, *args, **kwargs)
                     results.append(simulated_data)
                 return results
             
+            seed_list = np.random.randint(0, 2**32-1, num_cores)
             pool = pathosmp.ProcessingPool(num_cores)
             iterations_per_process = num_iters // num_cores
-            partial_simulate_data = lambda i: simulate_data(data, iterations_per_process)
+            # partial_simulate_data = lambda i: simulate_data(data, iterations_per_process)
+            partial_simulate_data = lambda i: simulate_data(data, iterations_per_process, seed_list[i])         # patch
+
             results = pool.map(partial_simulate_data, range(num_cores))
             flattened_results = [item for sublist in results for item in sublist]
             return flattened_results
         return wrapper_monte_carlo
     return decorator_monte_carlo
 
-
-# def campfire(num_iters, num_cores):
-#     '''
-#     Much like a campfire which brings people together and allow for sharing stories and experiences, 
-#     this decorator brings together the results of simulations across ``num_cores`` multiple processors and regroups them in a dictionary by key.
-    
-#     Parameters
-#     ------------
-#     num_cores: int
-#         Number of processors to use 
-#     num_iters : int
-#         The number of iterations to perform for a specific model / Monte Carlo simulation. 
-#     '''
-#     def decorator_monte_carlo(monte_carlo_func):
-#         @wraps(monte_carlo_func)
-#         def wrapper_monte_carlo(data, *args, **kwargs):
-#             def simulate_data(data, num_iters):
-#                 results = []
-#                 for i in range(num_iters):
-#                     simulated_data = monte_carlo_func(data, *args, **kwargs)
-#                     results.append(simulated_data)
-#                 return results
-            
-#             pool = pathosmp.ProcessingPool(num_cores)
-#             iterations_per_process = num_iters // num_cores
-#             partial_simulate_data = lambda i: simulate_data(data, iterations_per_process)
-
-#             results = pool.map(partial_simulate_data, range(num_cores))
-#             regrouped_results = {}
-
-#             for results_core in results:
-#                 for result in results_core:
-#                     # print('re',result)
-#                     for key in result.keys():
-#                         if key not in regrouped_results.keys():
-#                             regrouped_results[key] = []
-#                         regrouped_results[key] += result[key]
-#             return regrouped_results
-#         return wrapper_monte_carlo
-#     return decorator_monte_carlo
-
-import random
 
 def campfire(num_iters, num_cores):
     '''
