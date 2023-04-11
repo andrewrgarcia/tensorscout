@@ -64,7 +64,7 @@ def campfire(num_iters, num_cores):
                 results = []
                 for i in range(num_iters):
                     simulated_data = monte_carlo_func(data, *args, **kwargs)
-                    results.append(simulated_data)
+                    results.append((simulated_data,))
                 return results
             
             seed_list = np.random.randint(0, 2**32-1, num_cores)
@@ -77,13 +77,17 @@ def campfire(num_iters, num_cores):
 
             for results_core in results:
                 for result in results_core:
-                    for key in result.keys():
-                        if key not in regrouped_results.keys():
+                    for key, value in result[0].items():
+                        if key not in regrouped_results:
                             regrouped_results[key] = []
-                        regrouped_results[key] += result[key]
+                        regrouped_results[key].extend(value)
+
             return regrouped_results
         return wrapper_monte_carlo
     return decorator_monte_carlo
+
+
+
 
 
 
