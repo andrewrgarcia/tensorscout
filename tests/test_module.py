@@ -50,7 +50,7 @@ def test_campfire():
 
     with timethis("campfire dictionary"):
 
-        @scout.campfire(num_iters=400, num_cores=4)
+        @scout.campfire(num_iters=8, num_cores=4)
         def simulation(data):
             for i in range(1000):
                 'the above 1,000 iters is to stress-test  the campfire method against the bare (no multiproc) method (in the end, only the last samples from x y and z are returned)'
@@ -59,11 +59,11 @@ def test_campfire():
                 z = [np.random.normal(0, 1) for i in range(5)]
         
             # print(data)
-            return {'x': x, 'y': y, 'z': z}
+            return {'x': [x], 'y': [y], 'z': [z]}
 
         data = 'c'
         map = simulation(data)
-        # print(map)
+        print(map)
         # print(map.keys())
         print('unique samples -- x: {}, y: {}, z: {}'.format(unique('x'),unique('y'),unique('z')) )  
 
