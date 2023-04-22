@@ -4,17 +4,11 @@ Welcome to tensorscout's documentation!
 What if for some reason, you could unlock 100% of your processing power?
 -------------------------------------------------------------------------------------
 
-.. |icon| image:: ../img/icon_scout.png
-  :width: 100
+.. image:: ../img/icon_scout.png
+  :width: 400
   :alt: Alternative text
   :target: https://github.com/andrewrgarcia/tensorscout
 
-
-.. figure:: ../img/parallel16_2.png
-  :width: 500
-  :alt: Alternative text
-
-  A single computer leveraging the multiprocessing capabilities of tensorscout to distribute tasks to 16 computers and aggregate the results back to the original machine.
 
 
 .. 
@@ -34,6 +28,13 @@ Overall, this package is ideal for users working with large-scale tensor operati
 
 
 Check out the :doc:`usage` section for further information, including how to :ref:`installation` the project. 
+
+
+.. figure:: ../img/parallel16.png
+  :width: 500
+  :alt: Alternative text
+
+  A single computer leveraging the multiprocessing capabilities of tensorscout to distribute tasks to 16 computers and aggregate the results back to the original machine.
 
 
 

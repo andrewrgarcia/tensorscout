@@ -87,7 +87,47 @@ def campfire(num_iters, num_cores):
     return decorator_monte_carlo
 
 
+def frameforge(dataset, num_cores):
+    '''
+    Frameforge allows you to easily split your numerical OR image data across multiple processors. 
+    A peculiar application to it may be to apply a specific set of operations to each frame of a video stream, resulting in a seamless and professional-looking final product.
+    
+    Parameters
+    ------------
+    dataset: list or array
+        The dataset of images to split across num_cores processors.
+    num_cores: int
+        Number of processors to use 
+    '''
+    def decorator_frame(frame_func):
+        @wraps(frame_func)
+        def wrapper_frame(*args, **kwargs):
+            def process_data(images, seed):
+                np.random.seed(seed)
+                results = []
+                for image in images:
+                    processed_data = frame_func(image, *args, **kwargs)
+                    results.append(processed_data)
+                return results
 
+            seed_list = np.random.randint(0, 2**32-1, num_cores)
+            pool = pathosmp.Pool(num_cores)
+            images_per_process = len(dataset) // num_cores
+            partial_process_data = lambda i: process_data(dataset[i*images_per_process : (i+1)*images_per_process], seed_list[i])
+
+            results = pool.map(partial_process_data, range(num_cores))
+            regrouped_results = {}
+
+            for results_core in results:
+                for result in results_core:
+                    for key, value in result[0].items():
+                        if key not in regrouped_results:
+                            regrouped_results[key] = []
+                        regrouped_results[key].extend(value)
+
+            return regrouped_results
+        return wrapper_frame
+    return decorator_frame
 
 
 
