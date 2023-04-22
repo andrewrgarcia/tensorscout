@@ -11,11 +11,6 @@ What if for some reason, you could unlock 100% of your processing power?
 
 
 
-.. 
-  |icon|
-
-
-
 This Python package is simply, a collection of decorators that streamline the use of parallel processing with Python. These decorators are powered by `pathos <https://pathos.readthedocs.io>`_ 
 and allow users to distribute operations over multiple CPU cores or vCPUs (with cloud computing), 
 significantly reducing the time required for computation. 
